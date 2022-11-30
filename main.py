@@ -9,8 +9,8 @@ import ffmpeg
 import os
 from tqdm import tqdm
 
-ID = "i3zqz9fhf69f"
-# ID = input("ENTER VIDEO ID:\n")
+# ID = "i3zqz9fhf69f"
+ID = input("ENTER VIDEO ID:\n")
 
 def write_to_file(string, file):
     with open(file, "w", encoding="utf-8") as file:
@@ -85,6 +85,7 @@ m3u8 = decrypt_m3u8(data_json["msgn"], cipher)
 write_to_file(m3u8, "first_decoded.txt")
 play_lists = m3u8.split("#EXT-X-STREAM-INF:")[1:]
 
+# CHOOSE VIDEO QUALITY
 print("CHOOSE VIDEO QUALITY :")
 
 for i, v in enumerate(play_lists):
@@ -94,8 +95,8 @@ for i, v in enumerate(play_lists):
     print(f'{i} = {part[0].split("=")[-1]}')
 
 index = input()
-# index = 0
 
+# GET RELEVANT PLAYLIST PARTS
 res = session.get(play_lists[int(index)])
 if res.status_code == 200:
     print("[INFO] SUCCESSFUL LOAD ON STREAM M3U8")
@@ -107,6 +108,7 @@ write_to_file(m3u8, "second_decoded.txt")
 
 m3u8_data = m3u8.split("\n")
 
+# GET DECRYPTION DATA
 VIDEO_DECRYPTION_KEY = None
 VIDEO_DECRYPTION_IV = None
 
@@ -115,7 +117,6 @@ CIPHER = None
 
 PARTS = []
 
-# with open("vid", "wb") as file:
 for i, v in enumerate(m3u8_data):
     if "#EXT-X-KEY:" in v:
         v = v.split(",")
@@ -135,14 +136,9 @@ for i, v in enumerate(m3u8_data):
     elif "#EXTINF:" in v:
         link = m3u8_data[i+1]
         PARTS.append(link)
-            # print(link)
-            # res = session.get(link)
-            # print(f"{res.headers['content-length']} BYTES OF DATA")
-            # data = res.content
-            # BUFFER += len(data)
-            # decrypted = CIPHER.decrypt(data)
-            # file.write(decrypted)
 
+
+# START DOWNLOAD
 Progress = tqdm(desc="Download", total=len(PARTS), unit="Part")
 
 with open("vid", "wb") as file:
@@ -156,8 +152,9 @@ with open("vid", "wb") as file:
 
 Progress.close()
 
-print(f"\nTOTAL SIZE [{BUFFER // 1048576}] MBs")
 
+# CONVERT VIDEO STREAM TO MP4 VIA FFMPEG
+print(f"\nTOTAL SIZE [{BUFFER // 1048576}] MBs")
 stream = ffmpeg.input("vid")
 stream = ffmpeg.output(stream, "Video.mp4")
 try:
