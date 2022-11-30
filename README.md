@@ -1,5 +1,5 @@
 ﻿# kavimo-downloader
-Works for biomaze.ir just because if couldnt find anymore sites hosted by kavimo
+Works for biomaze.ir just because i couldnt find anymore sites hosted by kavimo
 
 ALL VIDEOS ARE HOSTED AS IFRAMES e.g. "https://stream.biomaze.ir/i3zqz9fhf69f/iframe"
 
