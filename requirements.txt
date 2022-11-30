@@ -1,0 +1,4 @@
+requests
+pycryptodomex
+ffmpeg-python
+tqdm
